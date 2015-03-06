@@ -19,7 +19,7 @@ class SlackNotifcationPlugin(Component):
 	implements(ITicketChangeListener)
 	webhook = Option('slack', 'webhook', 'https://hooks.slack.com/services/',
 		doc="Incoming webhook for slack")
-	channel = IntOption('slack', 'channel', '#Trac',
+	channel = Option('slack', 'channel', '#Trac',
 		doc="Channel name on slack")
 	username = Option('slack', 'username', 'Trac-Bot',
 		doc="Username of th bot on slack notify")
