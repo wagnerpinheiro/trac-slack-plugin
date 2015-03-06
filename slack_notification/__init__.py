@@ -29,18 +29,15 @@ class SlackNotifcationPlugin(Component):
 		values['author'] = re.sub(r' <.*', '', values['author'])
 		#template = '%(project)s/%(branch)s %(rev)s %(author)s: %(logmsg)s'
 		#template = '%(project)s %(rev)s %(author)s: %(logmsg)s'
-		template = '%(project)s %(type)s %(id)s %(action)s %(author)s: %(summary)s'
+		template = '_%(project)s_ \n%(type)s <%(url)s|%(id)s>: %(summary)s [*%(action)s* by %(author)s] \n%(comment)s'
 		message = template % values
-		#message = ' '.join(['%s=%s' % (key, value) for (key, value) in values.items()])
-		#data = {"to": self.target, "privmsg": message.encode('utf-8').strip() }
-		data = {"channel": channel,
-			"username": username,
+		#message = ' '.join(['%s=%s' % (key, value) for (key, value) in values.items()])		
+		data = {"channel": self.channel,
+			"username": self.username,
 			"text": message.encode('utf-8').strip()
 	    }
 		try:
-			r = requests.post(webhook, data={"payload":json.dumps(data)})
-			#s = socket.create_connection((self.host, self.port))
-			#s.sendall(json.dumps(data))
+			r = requests.post(self.webhook, data={"payload":json.dumps(data)})			
 		except requests.exceptions.RequestException as e:
 			return False
 		return True
@@ -48,6 +45,7 @@ class SlackNotifcationPlugin(Component):
 	def ticket_created(self, ticket):
 		values = prepare_ticket_values(ticket, 'created')
 		values['author'] = values['reporter']
+		values['comment'] = ''
 		self.notify('ticket', values)
 
 	def ticket_changed(self, ticket, comment, author, old_values):
@@ -58,9 +56,9 @@ class SlackNotifcationPlugin(Component):
 					action = ticket.values['status']
 		values = prepare_ticket_values(ticket, action)
 		values.update({
-			'comment':	comment or '',
-			'author':	author or '',
-			'old_values':	old_values
+			'comment': '>>> ' + comment or '',
+			'author': author or '',
+			'old_values': old_values
 		})
 		self.notify('ticket', values)
 
