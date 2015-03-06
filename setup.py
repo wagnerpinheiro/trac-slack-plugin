@@ -1,18 +1,18 @@
 from setuptools import setup
 
 setup(
-    name='IrkerNotifcationPlugin',
+    name='SlackNotifcationPlugin',
     version='0.1',
-    description='Plugin to announce Trac changes via Irker',
-    author='Southen',
-    url='https://github.com/Southen/trac-irker-plugin',
+    description='Plugin to announce Trac changes in Slack',
+    author='Wagner Pinheiro',
+    url='https://github.com/wagnerpinheiro/trac-slack-plugin',
     license='BSD',
-    packages=['irker_notification'],
+    packages=['slack_notification'],
     classifiers=[
         'Framework :: Trac',
         'License :: OSI Approved :: BSD License',
     ],
     entry_points={
-        'trac.plugins': 'irker_notification = irker_notification'
+        'trac.plugins': 'slack_notification = slack_notification'
     }
 )

@@ -1,5 +1,5 @@
 import json
-import socket
+import requests
 import re
 from trac.core import *
 from trac.config import Option, IntOption
@@ -15,14 +15,14 @@ def prepare_ticket_values(ticket, action=None):
 	values['project'] = ticket.env.project_name.encode('utf-8').strip()
 	return values
 
-class IrkerNotifcationPlugin(Component):
+class SlackNotifcationPlugin(Component):
 	implements(ITicketChangeListener)
-	host = Option('irker', 'host', 'localhost',
-		doc="Host on which the irker daemon resides.")
-	port = IntOption('irker', 'port', 6659,
-		doc="Irker listen port.")
-	target = Option('irker', 'target', 'irc://localhost/#commits',
-		doc="IRC channel URL to which notifications are to be sent.")
+	webhook = Option('slack', 'webhook', 'https://hooks.slack.com/services/',
+		doc="Incoming webhook for slack")
+	channel = IntOption('slack', 'channel', '#Trac',
+		doc="Channel name on slack")
+	username = Option('slack', 'username', 'Trac-Bot',
+		doc="Username of th bot on slack notify")
 
 	def notify(self, type, values):
 		values['type'] = type
@@ -32,11 +32,16 @@ class IrkerNotifcationPlugin(Component):
 		template = '%(project)s %(type)s %(id)s %(action)s %(author)s: %(summary)s'
 		message = template % values
 		#message = ' '.join(['%s=%s' % (key, value) for (key, value) in values.items()])
-		data = {"to": self.target, "privmsg": message.encode('utf-8').strip() }
+		#data = {"to": self.target, "privmsg": message.encode('utf-8').strip() }
+		data = {"channel": channel,
+			"username": username,
+			"text": message.encode('utf-8').strip()
+	    }
 		try:
-			s = socket.create_connection((self.host, self.port))
-			s.sendall(json.dumps(data))
-		except socket.error:
+			r = requests.post(webhook, data={"payload":json.dumps(data)})
+			#s = socket.create_connection((self.host, self.port))
+			#s.sendall(json.dumps(data))
+		except requests.exceptions.RequestException as e:
 			return False
 		return True
 

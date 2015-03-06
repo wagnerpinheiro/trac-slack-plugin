@@ -1,6 +1,6 @@
-# trac-irker-plugin
+# trac-slack-plugin
 
-Plugin to announce Trac changes via Irker.
+Plugin to announce Trac changes in Slack service.
 
 
 ## Installation
@@ -14,14 +14,18 @@ Deploy to a specific Trac environment:
 Enable plugin in trac.ini:
 
     [components]
-    irker_notification.* = enabled
+    slack_notification.* = enabled
 
 Configuration in trac.ini:
 
-    [irker]
-    host = localhost
-    port = 6659
-    target = irc://localhost/#commits
+    [slack]
+    webhook = https://hooks.slack.com/services/T03424351J2/B03451KH/t2w23452345mXaNhuuAibD
+    channel = #Trac
+    username = Trac-Bot
+
+
+
+Tanks to Sebastian Southen for your work with Irker Notification!
 
 
 ## License
