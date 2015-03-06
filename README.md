@@ -1,6 +1,6 @@
 # trac-slack-plugin
 
-Plugin to announce Trac changes in Slack service.
+Plugin to announce Trac changes in [Slack](https://slack.com/) service.
 
 
 ## Installation
@@ -25,7 +25,7 @@ Configuration in trac.ini:
 
 
 
-Tanks to Sebastian Southen for your work with Irker Notification!
+Thanks to Sebastian Southen for his work with the Irker Notification!
 
 
 ## License
