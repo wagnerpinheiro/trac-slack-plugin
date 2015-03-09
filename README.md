@@ -22,6 +22,7 @@ Configuration in trac.ini:
     webhook = https://hooks.slack.com/services/T03424351J2/B03451KH/t2w23452345mXaNhuuAibD
     channel = #Trac
     username = Trac-Bot
+    fields = type,component,resolution
 
 
 

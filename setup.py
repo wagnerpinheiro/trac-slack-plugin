@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='SlackNotifcationPlugin',
-    version='0.1',
+    version='0.2',
     description='Plugin to announce Trac changes in Slack',
     author='Wagner Pinheiro',
     url='https://github.com/wagnerpinheiro/trac-slack-plugin',
