@@ -13,6 +13,8 @@ def prepare_ticket_values(ticket, action=None):
 	values['action'] = action
 	values['url'] = ticket.env.abs_href.ticket(ticket.id)
 	values['project'] = ticket.env.project_name.encode('utf-8').strip()
+	values['attrib'] = ''
+	values['changes'] = ''
 	return values
 
 class SlackNotifcationPlugin(Component):
