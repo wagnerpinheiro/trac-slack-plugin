@@ -5,6 +5,11 @@ Plugin to announce Trac changes in [Slack](https://slack.com/) service.
 
 ## Installation
 
+Requirements:
+
+    Requests library: https://pypi.python.org/pypi/requests
+    $ pip install requests
+
 Deploy to a specific Trac environment:
 
     $ cd /path/to/pluginsource
