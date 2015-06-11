@@ -47,7 +47,7 @@ class SlackNotifcationPlugin(Component):
 		if values['attrib']:
 			template += '\n```%(attrib)s```'
 
-		if values['changes']:
+		if values.get('changes', False):
 			template += '\n:small_red_triangle: Changes: ```%(changes)s```'
 
 		if values['comment']:
