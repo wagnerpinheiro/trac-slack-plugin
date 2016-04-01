@@ -20,13 +20,13 @@ def prepare_ticket_values(ticket, action=None):
 class SlackNotifcationPlugin(Component):
 	implements(ITicketChangeListener)
 	webhook = Option('slack', 'webhook', 'https://hooks.slack.com/services/',
-		doc="Incoming webhook for slack")
+		doc="Incoming webhook for Slack")
 	channel = Option('slack', 'channel', '#Trac',
-		doc="Channel name on slack")
+		doc="Channel name on Slack")
 	username = Option('slack', 'username', 'Trac-Bot',
-		doc="Username of th bot on slack notify")
+		doc="Username of the bot on Slack notify")
 	fields = Option('slack', 'fields', 'type,component,resolution',
-		doc="Username of th bot on slack notify")
+		doc="Fields to include in Slack notification")
 
 	def notify(self, type, values):
 		# values['type'] = type
@@ -40,10 +40,10 @@ class SlackNotifcationPlugin(Component):
 
 		if values['action'] == 'created':
 			template += ' :pushpin:'
-		
+
 		if values['description']:
 			template += ' \nDescription: ```%(description)s```'
-		
+
 		if values['attrib']:
 			template += '\n```%(attrib)s```'
 
@@ -54,13 +54,13 @@ class SlackNotifcationPlugin(Component):
 			template += '\n>>>%(comment)s'
 
 		message = template % values
-		#message = ' '.join(['%s=%s' % (key, value) for (key, value) in values.items()])		
+		#message = ' '.join(['%s=%s' % (key, value) for (key, value) in values.items()])
 		data = {"channel": self.channel,
 			"username": self.username,
 			"text": message.encode('utf-8').strip()
 		}
 		try:
-			r = requests.post(self.webhook, data={"payload":json.dumps(data)})			
+			r = requests.post(self.webhook, data={"payload":json.dumps(data)})
 		except requests.exceptions.RequestException as e:
 			return False
 		return True
@@ -95,7 +95,7 @@ class SlackNotifcationPlugin(Component):
 
 		if 'description' not in old_values.keys():
 			values['description'] = ''
-		
+
 		fields = self.fields.split(',')
 		changes = []
 		attrib = []
@@ -108,7 +108,7 @@ class SlackNotifcationPlugin(Component):
 				changes.append('  * %s: %s => %s' % (field, old_values[field], ticket[field]))
 
 		values['attrib'] = "\n".join(attrib) or ''
-		values['changes'] = "\n".join(changes) or ''		
+		values['changes'] = "\n".join(changes) or ''
 
 		self.notify('ticket', values)
 
