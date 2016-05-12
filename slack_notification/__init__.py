@@ -35,29 +35,49 @@ class SlackNotifcationPlugin(Component):
 		#template = '%(project)s %(rev)s %(author)s: %(logmsg)s'
 		template = '_%(project)s_ :incoming_envelope: \n%(type)s <%(url)s|%(id)s>: %(summary)s [*%(action)s* by @%(author)s]'
 
+		attachments = []
+
 		if values['action'] == 'closed':
 			template += ' :white_check_mark:'
 
 		if values['action'] == 'created':
 			template += ' :pushpin:'
 
-		if values['description']:
-			template += ' \nDescription: ```%(description)s```'
-
 		if values['attrib']:
-			template += '\n```%(attrib)s```'
+			attachments.append({
+				'title': 'Attributes',
+				'text': values['attrib']
+			})
 
 		if values.get('changes', False):
-			template += '\n:small_red_triangle: Changes: ```%(changes)s```'
+			attachments.append({
+				'title': ':small_red_triangle: Changes',
+				'text': values['changes']
+			})
+
+		# For comment and description, strip the {{{, }}} markers. They add nothing
+		# of value in Slack, and replacing them with ` or ``` doesn't help as these
+		# end up being formatted as blockquotes anyway.
+
+		if values['description']:
+			attachments.append({
+				'title': 'Description',
+				'text': re.sub(r'({{{|}}})', '', values['description'])
+			})
 
 		if values['comment']:
-			template += '\n>>>%(comment)s'
+			attachments.append({
+				'title': 'Comment:',
+				'text': re.sub(r'({{{|}}})', '', values['comment'])
+			})
 
 		message = template % values
-		#message = ' '.join(['%s=%s' % (key, value) for (key, value) in values.items()])
-		data = {"channel": self.channel,
+
+		data = {
+			"channel": self.channel,
 			"username": self.username,
-			"text": message.encode('utf-8').strip()
+			"text": message.encode('utf-8').strip(),
+			"attachments": attachments
 		}
 		try:
 			r = requests.post(self.webhook, data={"payload":json.dumps(data)})
