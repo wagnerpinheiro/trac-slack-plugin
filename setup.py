@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 setup(
     name='SlackNotificationPlugin',
@@ -7,7 +7,8 @@ setup(
     author='Wagner Pinheiro',
     url='https://github.com/wagnerpinheiro/trac-slack-plugin',
     license='BSD',
-    packages=['slack_notification'],
+    #packages=['slack_notification'],
+    packages=find_packages(exclude=['*.tests']),
     classifiers=[
         'Framework :: Trac',
         'License :: OSI Approved :: BSD License',
