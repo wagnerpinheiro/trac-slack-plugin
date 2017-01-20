@@ -21,14 +21,24 @@ Enable plugin in trac.ini:
     [components]
     slack_notification.* = enabled
 
-Configuration in trac.ini:
+Configuration in trac.ini for ticket notificaitons:
 
     [slack]
-    webhook = https://hooks.slack.com/services/T03424351J2/B03451KH/t2w23452345mXaNhuuAibD
+    webhook = <Your Webhook Address>
     channel = #Trac
     username = Trac-Bot
     fields = type,component,resolution
 
+Configuration in trac.ini for wiki notifications:
+
+    [slack]
+    wiki-webhook = <Your Webhook Address>
+    wiki-channel = #TracWiki
+    wiki-username = Trac-Bot
+    wikiadd = 1           ; 0 = off, 1 = on; defaults to 1
+    wikidel = 1           ; 0 = off, 1 = on; defaults to 1
+    wikichange = 0        ; 0 = off, 1 = on; defaults to 0
+    wikipages = .*        ; when wikichange is on, regex to use to see if we should notify on the change; defaults to everything (.*)
 
 
 Thanks to Sebastian Southen for his work with the Irker Notification!
