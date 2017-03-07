@@ -37,7 +37,8 @@ class SlackWikiNotificationPlugin(Component):
             template = '_%(project)s_ :X:\n%(pagename)s[%(url)s] was *%(action)s*'
 
         # make sure author formatting is correct...
-        values['author'] = re.sub(r' <.*', '', values['author'])
+        if (values['author'])
+            values['author'] = re.sub(r' <.*', '', values['author'])
 
         # format the message
         message = template % values
@@ -80,6 +81,7 @@ class SlackWikiNotificationPlugin(Component):
         # otherwise we're enabled so move forward with notification...
         values = prepare_wiki_values(page, 'deleted')
         values['url'] = page.env.abs_href.wiki(page.name)
+        values['author'] = page.author  # this is usually going to be blank here...
         self.notify(values)
 
     def wiki_page_changed(self, page, version, t, comment, author, ipnr):
