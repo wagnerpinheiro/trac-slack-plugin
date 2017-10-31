@@ -8,12 +8,12 @@ from trac.ticket.api import ITicketChangeListener
 
 def prepare_ticket_values(ticket, action=None):
         values = ticket.values.copy()
-        values['id'] = "#" + str(ticket.id)
+        values['id'] = u"#" + unicode(ticket.id)
         values['action'] = action
         values['url'] = ticket.env.abs_href.ticket(ticket.id)
-        values['project'] = ticket.env.project_name.encode('utf-8').strip()
-        values['attrib'] = ''
-        values['changes'] = ''
+        values['project'] = ticket.env.project_name.strip()
+        values['attrib'] = u''
+        values['changes'] = u''
         return values
 
 class SlackNotifcationPlugin(Component):
@@ -29,28 +29,28 @@ class SlackNotifcationPlugin(Component):
 
         def notify(self, type, values):
                 # values['type'] = type
-                values['author'] = re.sub(r' <.*', '', values['author'])
-                #template = '%(project)s/%(branch)s %(rev)s %(author)s: %(logmsg)s'
-                #template = '%(project)s %(rev)s %(author)s: %(logmsg)s'
-                template = '_%(project)s_ :incoming_envelope: \n%(type)s <%(url)s|%(id)s>: %(summary)s [*%(action)s* by @%(author)s]'
+                values['author'] = re.sub(r' <.*', u'', values['author'])
+                #template = u'%(project)s/%(branch)s %(rev)s %(author)s: %(logmsg)s'
+                #template = u'%(project)s %(rev)s %(author)s: %(logmsg)s'
+                template = u'_%(project)s_ :incoming_envelope: \n%(type)s <%(url)s|%(id)s>: %(summary)s [*%(action)s* by @%(author)s]'
 
                 attachments = []
 
-                if values['action'] == 'closed':
-                        template += ' :white_check_mark:'
+                if values['action'] == u'closed':
+                        template += u' :white_check_mark:'
 
-                if values['action'] == 'created':
-                        template += ' :pushpin:'
+                if values['action'] == u'created':
+                        template += u' :pushpin:'
 
                 if values['attrib']:
                         attachments.append({
-                                'title': 'Attributes',
+                                'title': u'Attributes',
                                 'text': values['attrib']
                         })
 
                 if values.get('changes', False):
                         attachments.append({
-                                'title': ':small_red_triangle: Changes',
+                                'title': u':small_red_triangle: Changes',
                                 'text': values['changes']
                         })
 
@@ -60,14 +60,14 @@ class SlackNotifcationPlugin(Component):
 
                 if values['description']:
                         attachments.append({
-                                'title': 'Description',
-                                'text': re.sub(r'({{{|}}})', '', values['description'])
+                                'title': u'Description',
+                                'text': re.sub(r'({{{|}}})', u'', values['description'])
                         })
 
                 if values['comment']:
                         attachments.append({
-                                'title': 'Comment:',
-                                'text': re.sub(r'({{{|}}})', '', values['comment'])
+                                'title': u'Comment:',
+                                'text': re.sub(r'({{{|}}})', u'', values['comment'])
                         })
 
                 message = template % values
@@ -85,51 +85,51 @@ class SlackNotifcationPlugin(Component):
                 return True
 
         def ticket_created(self, ticket):
-                values = prepare_ticket_values(ticket, 'created')
+                values = prepare_ticket_values(ticket, u'created')
                 values['author'] = values['reporter']
-                values['comment'] = ''
+                values['comment'] = u''
                 fields = self.fields.split(',')
                 attrib = []
 
                 for field in fields:
-                        if ticket[field] != '':
-                                attrib.append('  * %s: %s' % (field, ticket[field]))
+                        if ticket[field] != u'':
+                                attrib.append(u'\u2022 %s: %s' % (field, ticket[field]))
 
-                values['attrib'] = "\n".join(attrib) or ''
+                values['attrib'] = u"\n".join(attrib) or u''
 
-                self.notify('ticket', values)
+                self.notify(u'ticket', values)
 
         def ticket_changed(self, ticket, comment, author, old_values):
-                action = 'changed'
+                action = u'changed'
                 if 'status' in old_values:
                         if 'status' in ticket.values:
                                 if ticket.values['status'] != old_values['status']:
                                         action = ticket.values['status']
                 values = prepare_ticket_values(ticket, action)
                 values.update({
-                        'comment': comment or '',
-                        'author': author or '',
+                        'comment': comment or u'',
+                        'author': author or u'',
                         'old_values': old_values
                 })
 
                 if 'description' not in old_values.keys():
-                        values['description'] = ''
+                        values['description'] = u''
 
                 fields = self.fields.split(',')
                 changes = []
                 attrib = []
 
                 for field in fields:
-                        if ticket[field] != '':
-                                attrib.append('  * %s: %s' % (field, ticket[field]))
+                        if ticket[field] != u'':
+                                attrib.append(u'\u2022 %s: %s' % (field, ticket[field]))
 
                         if field in old_values.keys():
-                                changes.append('  * %s: %s => %s' % (field, old_values[field], ticket[field]))
+                                changes.append(u'\u2022 %s: %s \u2192 %s' % (field, old_values[field], ticket[field]))
 
-                values['attrib'] = "\n".join(attrib) or ''
-                values['changes'] = "\n".join(changes) or ''
+                values['attrib'] = u"\n".join(attrib) or u''
+                values['changes'] = u"\n".join(changes) or u''
 
-                self.notify('ticket', values)
+                self.notify(u'ticket', values)
 
         def ticket_deleted(self, ticket):
                 pass
