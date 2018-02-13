@@ -37,7 +37,7 @@ class SlackWikiNotificationPlugin(Component):
             template = '_%(project)s_ :X:\n%(pagename)s[%(url)s] was *%(action)s*'
 
         # make sure author formatting is correct...
-        if (values['author'])
+        if (values['author']):
             values['author'] = re.sub(r' <.*', '', values['author'])
 
         # format the message
