@@ -75,7 +75,7 @@ class SlackNotifcationPlugin(Component):
                 data = {
                         "channel": self.channel,
                         "username": self.username,
-                        "text": message.encode('utf-8').strip(),
+                        "text": message.strip(),
                         "attachments": attachments
                 }
                 try:
